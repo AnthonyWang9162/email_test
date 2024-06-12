@@ -8,7 +8,9 @@ from email.mime.multipart import MIMEMultipart
 def send_email(receiver_email, name, unit):
     sender_email = os.getenv("EMAIL_USER")
     sender_password = os.getenv("EMAIL_PASS")
-    
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 465
+
     subject = "填寫表單通知"
     body = f"你好 {name},\n\n您來自 {unit} 的表單已經成功提交。\n\n此致\n敬禮"
 
@@ -23,7 +25,7 @@ def send_email(receiver_email, name, unit):
 
     # 使用 smtplib 發送郵件
     try:
-        server = smtplib.SMTP_SSL("smtp.example.com", 465)
+        server = smtplib.SMTP_SSL(smtp_server, smtp_port)
         server.login(sender_email, sender_password)
         server.sendmail(sender_email, receiver_email, message.as_string())
         server.close()
