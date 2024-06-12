@@ -1,6 +1,7 @@
 import streamlit as st
 import smtplib
 import os
+import sqlite3
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -33,6 +34,26 @@ def send_email(receiver_email, name, unit):
     except Exception as e:
         return f"發送郵件時發生錯誤: {e}"
 
+# 函數來初始化數據庫
+def init_db():
+    conn = sqlite3.connect('submissions.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS submissions
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT, name TEXT, unit TEXT)''')
+    conn.commit()
+    conn.close()
+
+# 函數來插入數據到數據庫
+def insert_submission(code, name, unit):
+    conn = sqlite3.connect('submissions.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO submissions (code, name, unit) VALUES (?, ?, ?)", (code, name, unit))
+    conn.commit()
+    conn.close()
+
+# 初始化數據庫
+init_db()
+
 # Streamlit 頁面
 st.title("自動發信表單")
 
@@ -47,5 +68,6 @@ with st.form("email_form"):
             receiver_email = f"u{code}@taipower.com.tw"
             result = send_email(receiver_email, name, unit)
             st.success(result)
+            insert_submission(code, name, unit)
         else:
             st.error("請填寫所有欄位。")
