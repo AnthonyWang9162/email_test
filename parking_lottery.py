@@ -192,8 +192,8 @@ spaces_number = cursor.execute("SELECT COUNT(車位編號) FROM 停車位 WHERE 
 participants_number = cursor.execute("SELECT COUNT(姓名代號) FROM 申請紀錄 WHERE 期別 = ? AND 身分註記 = '一般'", (current,)).fetchone()[0]
 conn.close()
 
-st.write(f"###### 本期停車位數量: {spaces_number}")
-st.write(f"###### 本期停車位抽籤人數: {participants_number}")
+st.write(f"##### 本期停車位數量: {spaces_number}")
+st.write(f"##### 本期停車位抽籤人數: {participants_number}")
 
 # 使用 Streamlit 的会话状态来存储抽籤结果
 if 'results_df' not in st.session_state:
