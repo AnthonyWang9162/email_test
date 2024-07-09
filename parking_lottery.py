@@ -96,21 +96,21 @@ def insert_lottery_results(current, results, waitlist):
 
 def generate_title(year, quarter):
     if quarter == 1:
-        text = f"總管理處{year}年第1期(1-3月)地下停車場員工自用車停車名冊"
+        text = f"總管理處{year}年第1期地下停車場員工自用車停車位抽籤結果"
     elif quarter == 2:
-        text = f"總管理處{year}年第2期(4-6月)地下停車場員工自用車停車名冊"
+        text = f"總管理處{year}年第2期地下停車場員工自用車停車位抽籤結果"
     elif quarter == 3:
-        text = f"總管理處{year}年第3期(7-9月)地下停車場員工自用車停車名冊"
+        text = f"總管理處{year}年第3期地下停車場員工自用車停車位抽籤結果"
     elif quarter == 4:
-        text = f"總管理處{year}年第4期(10-12月)地下停車場員工自用車停車名冊"
+        text = f"總管理處{year}年第4期地下停車場員工自用車停車位抽籤結果"
     return text
-
 def convert_df_to_pdf(df):
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter)
     elements = []
     year, quarter = get_quarter(today.year, today.month)
     Taiwan_year = year - 1911
+    date = f"{Taiwan_year:03d}年{today.month:02d}月{today.day:02d}日"
     title_text = generate_title(Taiwan_year, quarter)
 
     # 注册字体
@@ -155,7 +155,7 @@ def convert_df_to_pdf(df):
 
     # Add notes with part of the text in red
     note_text = (
-        "備註：本處<font color='red'>審核申請時</font>會<font color='red'>扣除前期停過</font>人員<font color='red'>名單</font>，故<font color='red'>本期已停車</font>之同仁<font color='red'>下期無須申請</font>。"
+        f"備註：此為{date}抽籤結果，<font color='red'>不代表</font>{Taiwan_year:03d}年第{quarter}期最後停車名單。"
     )
     note = Paragraph(note_text, styles['CustomFooter'])
     elements.append(note)
