@@ -79,18 +79,20 @@ def perform_lottery(current):
 def insert_lottery_results(current, results, waitlist):
     conn = get_db_connection()
     cursor = conn.cursor()
+    try:
+        for space, (unit, name, employee_id) in results:
+            cursor.execute("INSERT INTO 抽籤繳費 (期別, 姓名代號, 車位編號, 繳費狀態) VALUES (?, ?, ?, '未繳費')",
+                        (current, employee_id, space))
 
-    for space, (unit, name, employee_id) in results:
-        cursor.execute("INSERT INTO 抽籤繳費 (期別, 姓名代號, 車位編號, 繳費狀態) VALUES (?, ?, ?, '未繳費')",
-                       (current, employee_id, space))
-
-    for i, (unit, name, employee_id) in enumerate(waitlist):
-        backup_space_id = f"備取{i+1}"
-        cursor.execute("INSERT INTO 抽籤繳費 (期別, 姓名代號, 車位編號, 繳費狀態) VALUES (?, ?, ?, '未繳費')",
-                       (current, employee_id, backup_space_id))
-
-    conn.commit()
-    conn.close()
+        for i, (unit, name, employee_id) in enumerate(waitlist):
+            backup_space_id = f"備取{i+1}"
+            cursor.execute("INSERT INTO 抽籤繳費 (期別, 姓名代號, 車位編號, 繳費狀態) VALUES (?, ?, ?, '未繳費')",
+                        (current, employee_id, backup_space_id))
+    finally:
+        conn.commit()
+        db_file_path = '/tmp/抽籤管理系統.db'
+        upload_db(db_file_path, '1_TArAUZyzzZuLX3y320VpytfBlaoUGBB')  # 替换为你的数据库文件 ID
+        conn.close()
 
 def generate_title(year, quarter):
     if quarter == 1:
@@ -161,6 +163,7 @@ def convert_df_to_pdf(df):
     doc.build(elements)
     buffer.seek(0)
     return buffer
+
 def mask_name(name):
     return name[0] + '○' + name[2:] if len(name) > 1 else name
 
@@ -175,7 +178,6 @@ def get_quarter(year, month):
         return year + 1, 1
     else:
         raise ValueError("Month must be between 1 and 12")
-
 
 # Streamlit 应用代码
 today = datetime.today()
