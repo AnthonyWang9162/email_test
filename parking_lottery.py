@@ -42,7 +42,7 @@ def get_db_connection():
     # 使用本地 SQLite 数据库文件
     db_file_path = '/tmp/抽籤管理系統.db'
     # 确保下载数据库文件到临时路径
-    download_db('YOUR_DATABASE_FILE_ID', db_file_path)  # 替换为你的数据库文件 ID
+    download_db('1_TArAUZyzzZuLX3y320VpytfBlaoUGBB', db_file_path)  # 替换为你的数据库文件 ID
     conn = sqlite3.connect(db_file_path)
     return conn
 
